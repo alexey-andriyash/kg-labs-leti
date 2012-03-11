@@ -59,6 +59,7 @@ void GlWidget::paintGL() {
     glLineWidth(m_pointOrLineSize);
     glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
 /*
+    glColor3f(m_colourR, m_colourG, m_colourB);
     glBegin(m_beginMode);
         for(unsigned i = 0; i < m_vertex_counter*M_2D; i = i + M_2D) {
            glVertex2f(m_vertexArray[i], m_vertexArray[i+1]);
@@ -66,7 +67,7 @@ void GlWidget::paintGL() {
     glEnd();
 */
    if(m_beginMode == GL_POINTS) {
-        glColor3f(m_colourR, m_colourB, m_colourG);
+        glColor3f(m_colourR, m_colourG, m_colourB);
         glBegin(m_beginMode);
             for(unsigned i = 0; i < m_vertex_counter*M_2D; i = i + M_2D) {
                glVertex2f(m_vertexArray[i], m_vertexArray[i+1]);
@@ -91,7 +92,7 @@ void GlWidget::paintGL() {
             glEnd();
         }
 
-        glColor3f(m_colourR, m_colourB, m_colourG);
+        glColor3f(m_colourR, m_colourG, m_colourB);
 //        glColor3f(0.0, 1.0, 0.0);
         glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
         glBegin(m_beginMode);
@@ -203,6 +204,7 @@ void GlWidget::setColourR(float colour) {
            ((colour <= M_COLOUR_BORDER_TO + M_EPS)));
 
     m_colourR = colour;
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     updateGL();
 }
 
@@ -212,6 +214,7 @@ void GlWidget::setColourB(float colour) {
            (colour <= (M_COLOUR_BORDER_TO + M_EPS)));
 
     m_colourB = colour;
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     updateGL();
 }
 
@@ -221,6 +224,7 @@ void GlWidget::setColourG(float colour) {
            (colour <= (M_COLOUR_BORDER_TO + M_EPS)));
 
     m_colourG = colour;
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     updateGL();
 }
 
