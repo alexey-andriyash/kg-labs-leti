@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     setMenuWidget(createMenuBar(this));
-    addDockWidget(Qt::LeftDockWidgetArea, createDockWidget(this));
+    addDockWidget(Qt::TopDockWidgetArea, createDockWidget(this));
     setCentralWidget(createCentralWidget(this));
     createWidgetSettings();
     createConnections();
@@ -116,11 +116,22 @@ QWidget* MainWindow::createDrowParameterBox(QWidget* parent) {
     QGroupBox* parameterBox = new QGroupBox(tr(" ADDITION OPTIONS "), parent);
     QBoxLayout* parameterBoxLayout = new QHBoxLayout(parameterBox);
 
-    QGroupBox* pointOrLineSizeBox = new QGroupBox(tr(" point/line size"),
-                                                            parameterBox);
+    QGroupBox* pointOrLineSizeBox = new QGroupBox(tr(" point/line size"), parameterBox);
+//will be deleted after adding and connecting point slider and line slider                                                            parameterBox);
     QBoxLayout* sizeLayout = new QVBoxLayout(pointOrLineSizeBox);
     m_pointOrLineSlider = new QSlider(Qt::Horizontal, pointOrLineSizeBox);
     sizeLayout->addWidget(m_pointOrLineSlider);
+//
+    m_pointSlider = new QSlider(Qt::Horizontal, pointOrLineSizeBox);
+    m_lineSlider = new QSlider(Qt::Horizontal, pointOrLineSizeBox);
+    QBoxLayout* pointHLayout = new QHBoxLayout(pointOrLineSizeBox);
+    pointHLayout->addWidget(new QLabel(tr("point size: "), pointOrLineSizeBox));
+    pointHLayout->addWidget(m_pointSlider);
+    QBoxLayout* lineHLayout = new QHBoxLayout(pointOrLineSizeBox);
+    lineHLayout->addWidget(new QLabel(tr("line size: "), pointOrLineSizeBox));
+    lineHLayout->addWidget(m_lineSlider);
+    sizeLayout->addLayout(pointHLayout);
+    sizeLayout->addLayout(lineHLayout);
 
     QGroupBox* colourBox = new QGroupBox(tr(" colour "), parameterBox);
     QBoxLayout* colourLayout = new QVBoxLayout(colourBox);
@@ -180,6 +191,15 @@ QWidget* MainWindow::createScisorBox(QWidget* parent) {
 QWidget* MainWindow::createAlfaFunctBox(QWidget* parent) {
 
     QGroupBox* alfaFunctBox = new QGroupBox(tr(" ALFA FUNC"), parent);
+    QBoxLayout* funRefHLayout = new QHBoxLayout(alfaFunctBox);
+
+    m_alfaFunctComboBox = new QComboBox(alfaFunctBox);
+    m_alfaRefSpinBox = new QDoubleSpinBox(alfaFunctBox);
+
+    funRefHLayout->addWidget(new QLabel(tr("func:"), alfaFunctBox));
+    funRefHLayout->addWidget(m_alfaFunctComboBox);
+    funRefHLayout->addWidget(new QLabel(tr("    ref:"), alfaFunctBox));
+    funRefHLayout->addWidget(m_alfaRefSpinBox);
 
     return alfaFunctBox;
 }
@@ -187,6 +207,15 @@ QWidget* MainWindow::createAlfaFunctBox(QWidget* parent) {
 QWidget* MainWindow::createBlendFunctBox(QWidget* parent) {
 
     QGroupBox* blendFunctBox = new QGroupBox(tr(" BLEND FUNC"), parent);
+    QBoxLayout* sdFactorHLayout = new QHBoxLayout(blendFunctBox);
+
+    m_blendSfactorComboBox = new QComboBox(blendFunctBox);
+    m_blendDfactorComboBox = new QComboBox(blendFunctBox);
+
+    sdFactorHLayout->addWidget(new QLabel(tr("S factor:"), blendFunctBox));
+    sdFactorHLayout->addWidget(m_blendSfactorComboBox);
+    sdFactorHLayout->addWidget(new QLabel(tr("  D facror:"), blendFunctBox));
+    sdFactorHLayout->addWidget(m_blendDfactorComboBox);
 
     return blendFunctBox;
 }

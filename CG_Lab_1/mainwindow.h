@@ -64,6 +64,8 @@ private:
     QCheckBox* m_poligonPointCheckBox;
     QCheckBox* m_poligonLinesCheckBox;
     QSlider* m_pointOrLineSlider;
+    QSlider* m_pointSlider; //!
+    QSlider* m_lineSlider; //!
     QSlider* m_colour_R_Slider;
     QSlider* m_colour_B_Slider;
     QSlider* m_colour_G_Slider;
