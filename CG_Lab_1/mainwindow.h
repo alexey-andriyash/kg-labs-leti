@@ -28,6 +28,7 @@ private slots:
 
 private:
 
+    void setWidgetSettings();
     void createWidgetSettings();
     void createActions();
     void createConnections();

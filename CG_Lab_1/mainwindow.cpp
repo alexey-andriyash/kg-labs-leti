@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget* parent)
     setCentralWidget(createCentralWidget(this));
     createWidgetSettings();
     createConnections();
+    setWidgetSettings();
 }
 
 void MainWindow::createActions() {
@@ -290,10 +291,10 @@ void MainWindow::createWidgetSettings() {
     m_poligoneModeSwicher->addItem("GL_FILL", 0);
     m_poligoneModeSwicher->addItem("GL_LINE", 1);
     m_poligoneModeSwicher->addItem("GL_POINT", 2);
-
+/*
     m_poligonPointCheckBox->setCheckState(Qt::Checked);
     m_poligonLinesCheckBox->setCheckState(Qt::Checked);
-
+*/
     m_windingSwicher->addItem("GL_CCW", 0);
     m_windingSwicher->addItem("GL_CW", 1);
 
@@ -304,18 +305,78 @@ void MainWindow::createWidgetSettings() {
     m_xSpinBox->setSingleStep(0.01);
     m_ySpinBox->setSingleStep(0.01);
 
-    m_pointOrLineSlider->setRange(0, 100);
-    m_colour_R_Slider->setRange(0, 100);
-    m_colour_B_Slider->setRange(0, 100);
-    m_colour_G_Slider->setRange(0, 100);
+    m_pointOrLineSlider->setRange(0, 1000);
+    m_pointSlider->setRange(0, 1000);
+    m_lineSlider->setRange(0, 1000);
+    m_colour_R_Slider->setRange(0, 1000);
+    m_colour_B_Slider->setRange(0, 1000);
+    m_colour_G_Slider->setRange(0, 1000);
     m_pointOrLineSlider->setSingleStep(1);
     m_colour_R_Slider->setSingleStep(1);
     m_colour_B_Slider->setSingleStep(1);
     m_colour_G_Slider->setSingleStep(1);
-    m_pointOrLineSlider->setValue(0);
-    m_colour_R_Slider->setValue(50);
-    m_colour_B_Slider->setValue(50);
-    m_colour_G_Slider->setValue(50);
+
+    m_sclisorXSpinBox->setRange(GlWidget::M_DRAW_AREA_FROM,
+                                GlWidget::M_DRAW_AREA_TO);
+    m_sclisorYSpinBox->setRange(GlWidget::M_DRAW_AREA_FROM,
+                                GlWidget::M_DRAW_AREA_TO);
+    m_sclisorWSpinBox->setRange(GlWidget::M_DRAW_AREA_FROM,
+                                GlWidget::M_DRAW_AREA_TO);
+    m_sclisorHSpinBox->setRange(GlWidget::M_DRAW_AREA_FROM,
+                                GlWidget::M_DRAW_AREA_TO);
+    m_sclisorXSpinBox->setSingleStep(0.01);
+    m_sclisorYSpinBox->setSingleStep(0.01);
+    m_sclisorWSpinBox->setSingleStep(0.01);
+    m_sclisorHSpinBox->setSingleStep(0.01);
+
+//    m_sclisorSetButton;
+
+    m_alfaFunctComboBox->addItem("GL_NEVER", 0);
+    m_alfaFunctComboBox->addItem("GL_LESS", 1);
+    m_alfaFunctComboBox->addItem("GL_EQUAL", 2);
+    m_alfaFunctComboBox->addItem("GL_LEQUAL", 3);
+    m_alfaFunctComboBox->addItem("GL_GREATER", 4);
+    m_alfaFunctComboBox->addItem("GL_NOTEQUAL", 5);
+    m_alfaFunctComboBox->addItem("GL_GEQUAL", 6);
+    m_alfaFunctComboBox->addItem("GL_ALWAYS", 7);
+    m_alfaRefSpinBox->setRange(0, 1);
+    m_alfaRefSpinBox->setSingleStep(0.01);
+
+    m_blendSfactorComboBox->addItem("GL_DST_COLOR", 0);
+    m_blendSfactorComboBox->addItem("GL_ONE_MINUS_DST_COLOR", 1);
+    m_blendSfactorComboBox->addItem("GL_SRC_ALPHA_SATURATE", 2);
+
+    m_blendDfactorComboBox->addItem("GL_ZERO", 0);
+    m_blendDfactorComboBox->addItem("GL_ONE", 1);
+    m_blendDfactorComboBox->addItem("GL_SRC_COLOR", 2);
+    m_blendDfactorComboBox->addItem("GL_ONE_MINUS_SRC_COLOR", 3);
+    m_blendDfactorComboBox->addItem("GL_SRC_ALPHA", 4);
+    m_blendDfactorComboBox->addItem("GL_ONE_MINUS_SRC_ALPHA", 5);
+    m_blendDfactorComboBox->addItem("GL_DST_ALPHA", 6);
+    m_blendDfactorComboBox->addItem("GL_ONE_MINUS_DST_ALPHA", 7);
+}
+
+void MainWindow::setWidgetSettings() {
+/*BAD code! This function will refactor*/
+//    m_beginModeSwicher->setCurrentIndex(0);
+//    m_glWidget->setBeginMode(0);
+//    m_poligoneModeSwicher->setCurrentIndex(2);
+//    m_glWidget->setPoligonMode(2);
+    m_poligonPointCheckBox->setCheckState(Qt::Checked);
+    m_glWidget->setDrawPointsOnPoligon(Qt::Checked);
+    m_poligonLinesCheckBox->setCheckState(Qt::Checked);
+    m_glWidget->setDrawLinesOnPoligon(Qt::Checked);
+
+    m_pointOrLineSlider->setValue(500);
+    m_glWidget->setPointOrLineSize((m_glWidget->getSizes()[1] - m_glWidget->getSizes()[0])/2);
+
+    float value = 500/1000;
+    m_colour_R_Slider->setValue(500);
+    m_glWidget->setColourR(value);
+    m_colour_B_Slider->setValue(500);
+    m_glWidget->setColourB(value);
+    m_colour_G_Slider->setValue(500);
+    m_glWidget->setColourG(value);
 }
 
 void MainWindow::sl_addVertex() {
@@ -328,30 +389,30 @@ void MainWindow::sl_addVertex() {
 void MainWindow::sl_setPointOrLineSize() {
 
     float value = (float)((m_pointOrLineSlider->value())*
-                          (m_glWidget->getSizes()[1] - m_glWidget->getSizes()[2]))/100;
+                          (m_glWidget->getSizes()[1] - m_glWidget->getSizes()[0]))/1000;
     m_glWidget->setPointOrLineSize(value);
 }
 
 void MainWindow::sl_setColour_R() {
 
-    float value = ((float)m_colour_R_Slider->value())/100;
+    float value = ((float)m_colour_R_Slider->value())/1000;
     m_glWidget->setColourR(value);
 }
 
 void MainWindow::sl_setColour_B() {
 
-    float value = ((float)m_colour_B_Slider->value())/100;
+    float value = ((float)m_colour_B_Slider->value())/1000;
     m_glWidget->setColourB(value);
 }
 
 void MainWindow::sl_setColour_G() {
 
-    float value = ((float)m_colour_G_Slider->value())/100;
+    float value = ((float)m_colour_G_Slider->value())/1000;
     m_glWidget->setColourG(value);
 }
 
 float MainWindow::getSliderFloatPos(const QSlider *const slider) {
 
     return ((float)( (slider->value()*
-                     (m_glWidget->getSizes()[1] - m_glWidget->getSizes()[0]))/100));
+                     (m_glWidget->getSizes()[1] - m_glWidget->getSizes()[0]))/1000));
 }
