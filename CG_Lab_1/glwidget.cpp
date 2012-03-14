@@ -237,8 +237,8 @@ void GlWidget::setPointOrLineSize(float size) {
     updateGL();
 }
 
-void GlWidget::mousePressEvent(QMouseEvent* event)
-{
+void GlWidget::mousePressEvent(QMouseEvent* event) {
+
     float xNorm = ((GLfloat)event->x())/width(); //0  1
     float yNorm = ((GLfloat)event->y())/height();
 
@@ -246,5 +246,6 @@ void GlWidget::mousePressEvent(QMouseEvent* event)
     GLfloat yGL = -(2*yNorm - 1.0);
 
     addVertex(xGL, yGL);
+
 }
 
