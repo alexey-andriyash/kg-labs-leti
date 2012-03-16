@@ -238,6 +238,10 @@ void MainWindow::createWidgetSettings() {
     m_colour_R_Slider->setSingleStep(1);
     m_colour_B_Slider->setSingleStep(1);
     m_colour_G_Slider->setSingleStep(1);
+    m_glWidget->setColourR(0.5f);
+    m_glWidget->setColourG(0.5f);
+    m_glWidget->setColourB(0.5f);
+
 
     m_sclisorXSpinBox->setRange(GlWidget::M_DRAW_AREA_FROM,
                                 GlWidget::M_DRAW_AREA_TO);

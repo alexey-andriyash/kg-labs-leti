@@ -45,17 +45,36 @@ public slots:
     void setPointSize(float);
 
 protected:
+
     void initializeGL();
     void resizeGL(int nWidth, int nHeight);
     void paintGL();
     void mousePressEvent(QMouseEvent* pe);
     void mouseMoveEvent(QMouseEvent* pe);
-    void mouseReleaseEvent(QMouseEvent* pe);
+    void mouseReleaseEvent(QMouseEvent* );
     void wheelEvent(QWheelEvent* pe);
 
 private:
 
+    struct Cone {
+
+        Cone();
+        void DrowPoints();
+        void Drow();
+
+        static const GLfloat R;
+        static const GLfloat H;
+        static const GLfloat PI;
+        static  const unsigned DIVIDER;
+        GLfloat alfa;
+        GLfloat vertex[3];
+        GLfloat baseCenter[3];
+        GLfloat base[16][3];
+
+    } m_Cone;
+
     void drawOptionsInit();
+    GLfloat* getNormalVector(GLfloat[], GLfloat[], GLfloat[]);
 
     int m_isDrowLinesOnPoligon;
     int m_isDrowPointsOnPoligon;
