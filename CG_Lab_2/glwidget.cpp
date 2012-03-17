@@ -22,9 +22,6 @@ GlWidget::GlWidget(QWidget* parent)
 {
      setMinimumSize(300, 300);
      defaultScene();
-     m_colourR = 0.5f;
-     m_colourB = 0.5f;
-     m_colourG = 1.0f;
 }
 
 
@@ -93,10 +90,9 @@ void GlWidget::initializeGL() {
     glEnable(GL_CULL_FACE);
     glEnable(GL_NORMALIZE);
     glEnable(GL_LINE_STIPPLE);
-
-//    glEnable(GL_ALPHA_TEST);
+    glEnable(GL_ALPHA_TEST);
 //    glEnable(GL_BLEND);
-//    glEnable(GL_SCISSOR_TEST);
+
 
     glShadeModel(GL_FLAT);
     GLfloat ambientLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f};
@@ -146,7 +142,6 @@ void GlWidget::resizeGL(int nWidth, int nHeight) {
 
 void GlWidget::paintGL() {
 
-    glColor3f(m_colourR, m_colourG, m_colourB);
     glPointSize(m_pointSize);
     glLineWidth(m_lineSize);
     glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
@@ -161,12 +156,15 @@ void GlWidget::paintGL() {
     glRotatef(m_yRot, 0.0f, 1.0f, 0.0f);
     glRotatef(m_zRot, 0.0f, 0.0f, 1.0f);
 
+    glDisable(GL_ALPHA_TEST);
     glColor3f(1.0, 0.0, 0.0);
     if(m_isDrowPointsOnPoligon) {
         m_Cone.DrowPoints();
     }
+    glEnable(GL_ALPHA_TEST);
 
-    glColor3f(m_colourR, m_colourG, m_colourB);
+    glColor4f(m_colourR, m_colourG, m_colourB, m_colourAlfa);
+    glAlphaFunc(m_alfaFunc, m_alfaRef);
 
     m_Cone.Drow();
 }
@@ -253,11 +251,14 @@ void GlWidget::drawOptionsInit() {
     m_colourR = 0.5f;
     m_colourB = 0.5f;
     m_colourG = 0.5f;
+    m_colourAlfa = 0.5f;
     glGetFloatv(GL_POINT_SIZE_RANGE, m_sizes);
     glGetFloatv(GL_POINT_SIZE_GRANULARITY, &m_step);
     m_pointSize = m_sizes[0] + 20*m_step;
     m_lineSize = m_sizes[0] + 20*m_step;
     m_polygonMode = GL_FILL;
+    m_alfaFunc = GL_ALWAYS;
+    m_alfaRef = 0.50;
 }
 
 void GlWidget::setPoligonMode(int mode) {
@@ -298,7 +299,6 @@ void GlWidget::setColourB(float colour) {
            (colour <= (M_COLOUR_BORDER_TO + M_EPS)));
 
     m_colourB = colour;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     updateGL();
 }
 
@@ -308,7 +308,15 @@ void GlWidget::setColourG(float colour) {
            (colour <= (M_COLOUR_BORDER_TO + M_EPS)));
 
     m_colourG = colour;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    updateGL();
+}
+
+void GlWidget::setColourAlfa(float colour) {
+
+    assert((colour >= (M_COLOUR_BORDER_FROM - M_EPS)) &&
+           (colour <= (M_COLOUR_BORDER_TO + M_EPS)));
+
+    m_colourAlfa = colour;
     updateGL();
 }
 
@@ -328,6 +336,53 @@ void GlWidget::setPointSize(float size) {
 */
     m_pointSize = size;
     updateGL();
+}
+
+
+void GlWidget::setAlfaFunc(int param) {
+
+    assert((param >= 0) && (param <= 7) && "alfaFunc");
+
+    switch(param) {
+    case 0:
+        m_alfaFunc = GL_NEVER;
+        break;
+
+    case 1:
+        m_alfaFunc = GL_LESS;
+        break;
+
+    case 2:
+        m_alfaFunc = GL_EQUAL;
+        break;
+
+    case 3:
+        m_alfaFunc = GL_LEQUAL;
+        break;
+
+    case 4:
+        m_alfaFunc = GL_GREATER;
+        break;
+
+    case 5:
+        m_alfaFunc = GL_NOTEQUAL;
+        break;
+
+    case 6:
+        m_alfaFunc = GL_GEQUAL;
+        break;
+
+    case 7:
+        m_alfaFunc = GL_ALWAYS;
+        break;
+    }
+}
+
+void GlWidget::setAlfaRef(double param) {
+
+    assert((param >= 0.0 - M_EPS) && (param <= 1.0 + M_EPS) && "alpha ref");
+
+    m_alfaRef = (GLclampf)param;
 }
 
 GLfloat* GlWidget::getNormalVector(GLfloat p1[3], GLfloat p2[3], GLfloat p3[3]) {

@@ -26,6 +26,7 @@ private slots:
     void sl_setColour_R();
     void sl_setColour_B();
     void sl_setColour_G();
+    void sl_setColour_Alfa();
 
 private:
 
@@ -43,7 +44,6 @@ private:
     QWidget* createToolKitFrame(QWidget* parent = 0);
     QWidget* createPoligonBox(QWidget* parent = 0);
     QWidget* createDrowParameterBox(QWidget* parent = 0);
-    QWidget* createScisorBox(QWidget* parent = 0);
     QWidget* createAlfaFunctBox(QWidget* parent = 0);
     QWidget* createBlendFunctBox(QWidget* parent = 0);
 
@@ -68,11 +68,7 @@ private:
     QSlider* m_colour_R_Slider;
     QSlider* m_colour_B_Slider;
     QSlider* m_colour_G_Slider;
-    QDoubleSpinBox* m_sclisorXSpinBox;
-    QDoubleSpinBox* m_sclisorYSpinBox;
-    QDoubleSpinBox* m_sclisorWSpinBox;
-    QDoubleSpinBox* m_sclisorHSpinBox;
-    QPushButton* m_sclisorSetButton;
+    QSlider* m_colour_Alfa_Slider;
     QComboBox* m_alfaFunctComboBox;
     QDoubleSpinBox* m_alfaRefSpinBox;
     QComboBox* m_blendSfactorComboBox;

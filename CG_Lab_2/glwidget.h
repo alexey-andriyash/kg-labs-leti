@@ -18,13 +18,13 @@ public:
     GLfloat getColourR() const { return m_colourR; }
     GLfloat getColourB() const { return m_colourB; }
     GLfloat getColourG() const { return m_colourG; }
+    GLfloat getColourAlfa()  const { return m_colourAlfa; }
     GLfloat const*const getSizes() const { return m_sizes; }
     GLfloat getStep() const { return m_step;}
     GLfloat getPointSize() const { return m_pointSize; }
     GLfloat getLineSize() const { return m_lineSize; }
     GLenum getPolygonMode() const { return m_polygonMode;}
     GLenum getPolygonModeFace() const { return  m_polygonModeFace;}
-
 
     static const int M_2D = 2;
     static const GLfloat M_EPS;
@@ -41,8 +41,11 @@ public slots:
     void setColourR(float);
     void setColourB(float);
     void setColourG(float);
+    void setColourAlfa(float);
     void setLineSize(float);
     void setPointSize(float);
+    void setAlfaFunc(int); //!
+    void setAlfaRef(double); //!
 
 protected:
 
@@ -78,15 +81,21 @@ private:
 
     int m_isDrowLinesOnPoligon;
     int m_isDrowPointsOnPoligon;
+
     GLfloat m_colourR;
     GLfloat m_colourB;
     GLfloat m_colourG;
+    GLfloat m_colourAlfa;
+
     GLfloat m_sizes[2];
     GLfloat m_step;
     GLfloat m_pointSize;
     GLfloat m_lineSize;
     GLenum m_polygonMode;
     GLenum m_polygonModeFace;
+
+    GLenum m_alfaFunc;
+    GLclampf m_alfaRef;
 
     void scale_plus();
     void scale_minus();
