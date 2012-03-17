@@ -2,6 +2,7 @@
 //KG, gr8304, SPEU(LETI), 2012
 
 #include "glwidget.h"
+#include "gl/GLU.h"
 #include <assert.h>
 #include "math.h"
 
@@ -17,8 +18,10 @@ const GLfloat GlWidget::Cone::H = 60.0f;
 const GLfloat GlWidget::Cone::PI = 3.14f;
 const unsigned GlWidget::Cone::DIVIDER = 16;
 
+const GLfloat GlWidget::Window::H = 200.0f;
+
 GlWidget::GlWidget(QWidget* parent)
-    :  m_Cone(), QGLWidget(parent)
+    :  m_Cone(), m_Window(), QGLWidget(parent)
 {
      setMinimumSize(300, 300);
      defaultScene();
@@ -52,7 +55,7 @@ void GlWidget::Cone::Drow() {
     glFrontFace(GL_CCW);
     glBegin(GL_TRIANGLE_FAN);
         glVertex3fv(vertex);
-        for(unsigned i=0; i < DIVIDER; i++) {
+        for(unsigned i = 0; i < DIVIDER; i++) {
              glVertex3fv(base[i]);
          }
         glVertex3fv(base[0]);
@@ -61,7 +64,7 @@ void GlWidget::Cone::Drow() {
     glFrontFace(GL_CW);
     glBegin(GL_TRIANGLE_FAN);
          glVertex3fv(baseCenter);
-         for(unsigned i=0; i < DIVIDER; i++) {
+         for(unsigned i = 0; i < DIVIDER; i++) {
              glVertex3fv(base[i]);
          }
          glVertex3fv(base[0]);
@@ -79,6 +82,35 @@ void GlWidget::Cone::DrowPoints() {
     glEnd();
 }
 
+GlWidget::Window::Window() {
+
+    glassPoints[0][0] = 99.0f;
+    glassPoints[0][1] = -H/2;
+    glassPoints[0][2] = 0.0f;
+
+    glassPoints[1][0] = 99.0f;;
+    glassPoints[1][1] = +H/2;
+    glassPoints[1][2] = 0.0f;
+
+    glassPoints[2][0] = 99.0f;;
+    glassPoints[2][1] = H/2;
+    glassPoints[2][2] = H;
+
+    glassPoints[3][0] = 99.0f;;
+    glassPoints[3][1] = -H/2;
+    glassPoints[3][2] = H;
+}
+
+void GlWidget::Window::Drow() {
+    glDisable(GL_CULL_FACE);
+    glBegin(GL_QUADS);
+        for(unsigned i = 0; i < 4; i++) {
+             glVertex3fv(glassPoints[i]);
+         }
+    glEnd();
+    glEnable(GL_CULL_FACE);
+}
+
 void GlWidget::initializeGL() {
 
     drawOptionsInit();
@@ -91,8 +123,6 @@ void GlWidget::initializeGL() {
     glEnable(GL_NORMALIZE);
     glEnable(GL_LINE_STIPPLE);
     glEnable(GL_ALPHA_TEST);
-//    glEnable(GL_BLEND);
-
 
     glShadeModel(GL_FLAT);
     GLfloat ambientLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f};
@@ -118,6 +148,7 @@ void GlWidget::resizeGL(int nWidth, int nHeight) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+
     GLfloat ratio = ((GLfloat)nHeight)/((GLfloat)nWidth);
 
     if (nWidth>=nHeight) {
@@ -138,6 +169,12 @@ void GlWidget::resizeGL(int nWidth, int nHeight) {
                );
     }
     glViewport(0, 0, ((GLint)nWidth), ((GLint)nHeight));
+
+//    GLfloat fAspect;
+//    fAspect = (GLfloat)nWidth/(GLfloat)nHeight;
+//    gluPerspective(45.0f, fAspect, 1.0f, 425.0f);
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
 }
 
 void GlWidget::paintGL() {
@@ -161,12 +198,19 @@ void GlWidget::paintGL() {
     if(m_isDrowPointsOnPoligon) {
         m_Cone.DrowPoints();
     }
-    glEnable(GL_ALPHA_TEST);
 
+    glEnable(GL_ALPHA_TEST);
     glColor4f(m_colourR, m_colourG, m_colourB, m_colourAlfa);
     glAlphaFunc(m_alfaFunc, m_alfaRef);
-
     m_Cone.Drow();
+    glDisable(GL_ALPHA_TEST);
+
+    glColor4f(0.9f, 0.9f, 0.9f, 0.9f);
+    glEnable(GL_BLEND);
+    glBlendFunc(m_Sfactor, m_Dfactor);
+    m_Window.Drow();
+    glDisable(GL_BLEND);
+
 }
 
 void GlWidget::mousePressEvent(QMouseEvent* pe) {
@@ -259,6 +303,8 @@ void GlWidget::drawOptionsInit() {
     m_polygonMode = GL_FILL;
     m_alfaFunc = GL_ALWAYS;
     m_alfaRef = 0.50;
+    m_Sfactor = GL_DST_COLOR;
+    m_Dfactor = GL_SRC_ALPHA;
 }
 
 void GlWidget::setPoligonMode(int mode) {
@@ -338,7 +384,6 @@ void GlWidget::setPointSize(float size) {
     updateGL();
 }
 
-
 void GlWidget::setAlfaFunc(int param) {
 
     assert((param >= 0) && (param <= 7) && "alfaFunc");
@@ -408,3 +453,63 @@ GLfloat* GlWidget::getNormalVector(GLfloat p1[3], GLfloat p2[3], GLfloat p3[3]) 
     return nornal;
 }
 
+void GlWidget::setSFactor(int param) {
+
+    assert((param >= 0) && (param <= 3) && "SFactor");
+
+    switch(param) {
+
+        case 0:
+            m_Sfactor = GL_DST_COLOR;
+        break;
+
+        case 1:
+            m_Sfactor = GL_ONE_MINUS_DST_COLOR;
+        break;
+
+        case 2:
+            m_Sfactor = GL_SRC_ALPHA_SATURATE;
+        break;
+    }
+
+}
+
+void GlWidget::setDFactor(int param) {
+
+    assert((param >= 0) && (param <= 7) && "DFactor");
+
+    switch(param) {
+
+        case 0:
+            m_Dfactor = GL_ZERO;
+        break;
+
+        case 1:
+            m_Dfactor = GL_ONE;
+        break;
+
+        case 2:
+            m_Dfactor = GL_SRC_COLOR;
+        break;
+
+        case 3:
+            m_Dfactor = GL_ONE_MINUS_SRC_COLOR;
+        break;
+
+        case 4:
+            m_Dfactor = GL_SRC_ALPHA;
+        break;
+
+        case 5:
+            m_Dfactor = GL_ONE_MINUS_SRC_ALPHA;
+        break;
+
+        case 6:
+            m_Dfactor = GL_DST_ALPHA;
+        break;
+
+        case 7:
+            m_Dfactor = GL_ONE_MINUS_DST_ALPHA;
+        break;
+    }
+}

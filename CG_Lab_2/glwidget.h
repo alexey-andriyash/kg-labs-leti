@@ -4,6 +4,9 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+
+#include <QtOpenGL>
+#include "gl/GLU.h"
 #include <QGLWidget>
 #include "qevent.h"
 
@@ -44,8 +47,10 @@ public slots:
     void setColourAlfa(float);
     void setLineSize(float);
     void setPointSize(float);
-    void setAlfaFunc(int); //!
-    void setAlfaRef(double); //!
+    void setAlfaFunc(int);
+    void setAlfaRef(double);
+    void setSFactor(int);
+    void setDFactor(int);
 
 protected:
 
@@ -76,6 +81,16 @@ private:
 
     } m_Cone;
 
+    struct Window {
+
+        Window();
+        void Drow();
+
+        GLfloat glassPoints[4][3];
+        static const GLfloat H;
+
+    } m_Window;
+
     void drawOptionsInit();
     GLfloat* getNormalVector(GLfloat[], GLfloat[], GLfloat[]);
 
@@ -96,6 +111,9 @@ private:
 
     GLenum m_alfaFunc;
     GLclampf m_alfaRef;
+
+    GLenum m_Sfactor;
+    GLenum m_Dfactor;
 
     void scale_plus();
     void scale_minus();

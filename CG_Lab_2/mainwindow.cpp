@@ -49,7 +49,6 @@ QWidget* MainWindow::createToolKitFrame(QWidget * parent) {
     QTabWidget* tabWidget = new QTabWidget(parent);
     tabWidget->addTab(createPoligonBox(parent), tr("PoligonOptions"));
     tabWidget->addTab(createDrowParameterBox(parent), tr("DrowOptions"));
-    //tabWidget->addTab(createScisorBox(parent), tr("ScisorOptions"));
     tabWidget->addTab(createAlfaFunctBox(parent), tr("AlfaFunctOptions"));
     tabWidget->addTab(createBlendFunctBox(parent), tr("BlendFunctOptions"));
 
@@ -201,6 +200,12 @@ void MainWindow::createConnections() {
     connect(m_colour_Alfa_Slider, SIGNAL(actionTriggered(int)),
                                     this, SLOT(sl_setColour_Alfa()));
 
+
+    connect(m_blendSfactorComboBox, SIGNAL(activated(int)),
+                            m_glWidget, SLOT(setSFactor(int)));
+
+    connect(m_blendDfactorComboBox, SIGNAL(activated(int)),
+                           m_glWidget, SLOT(setDFactor(int)));
 }
 
 void MainWindow::createWidgetSettings() {
@@ -254,6 +259,7 @@ void MainWindow::createWidgetSettings() {
     m_blendDfactorComboBox->addItem("GL_ONE_MINUS_SRC_ALPHA", 5);
     m_blendDfactorComboBox->addItem("GL_DST_ALPHA", 6);
     m_blendDfactorComboBox->addItem("GL_ONE_MINUS_DST_ALPHA", 7);
+    m_blendDfactorComboBox->setCurrentIndex(4);
 }
 
 void MainWindow::setWidgetSettings() {

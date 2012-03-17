@@ -14,20 +14,16 @@
      }
     MainWindow* mainWindow = new MainWindow();
     mainWindow->show();
-    // GlWidget* m_glWidget = new GlWidget();
-    // m_glWidget->show();
-     return app.exec();
- }
+    return app.exec();
+}
 
 /*
   TODO:
-  АЛЬФА
-  + добавить альфа компонент к цвету фигуры+
-  - поддключить альфа тест
 
  СМЕШИВАНИЕ
     - нарисовать стекло и рамку
     - установить параметры смешивания цвета
     - подключить виджеты
+    -+ тень
 
 */
